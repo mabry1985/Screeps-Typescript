@@ -10,6 +10,15 @@ interface CreepMemory {
 interface Memory {
   uuid: number;
   log: any;
+  state: any;
+}
+
+interface Role {
+  name: string;
+  currentAmount: number;
+  maxAmount: number;
+  bodyParts: BodyPartConstant[];
+  cost: number;
 }
 
 // `global` extension samples
