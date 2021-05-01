@@ -19,6 +19,7 @@ interface Role {
   maxAmount: number;
   bodyParts: BodyPartConstant[];
   cost: number;
+  buildsRoads: boolean
 }
 
 // `global` extension samples
