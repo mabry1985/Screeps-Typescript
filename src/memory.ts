@@ -1,36 +1,49 @@
-Memory.state = {
-  creepRoles: [
-    {
-      name: "harvester",
-      currentAmount: 0,
-      maxAmount: 2,
-      bodyParts: [WORK, CARRY, MOVE],
-      cost: 0,
-      buildsRoads: false // whether or not creep will attempt to lay road on current path
-    },
-    {
-      name: "builder",
-      currentAmount: 0,
-      maxAmount: 0,
-      bodyParts: [WORK, CARRY, MOVE],
-      cost: 0,
-      buildsRoads: false
-    },
-    {
-      name: "upgrader",
-      currentAmount: 0,
-      maxAmount: 0,
-      bodyParts: [WORK, CARRY, MOVE],
-      cost: 0,
-      buildsRoads: false
-    },
-    {
-      name: "repairer",
-      currentAmount: 0,
-      maxAmount:0,
-      bodyParts: [WORK, CARRY, MOVE],
-      cost: 0,
-      buildsRoads: false
-    }
-  ]
+Memory.creepRoles = {
+  harvester: {
+    currentAmount: 0,
+    maxAmount: [3, 3, 3, 3, 3, 3, 3, 3],
+    bodyParts: [
+      [WORK, CARRY, MOVE],
+      [WORK, CARRY, MOVE, MOVE, MOVE],
+      [WORK, CARRY, MOVE, MOVE, MOVE],
+      [WORK, CARRY, MOVE, MOVE, MOVE],
+      [WORK, CARRY, MOVE, MOVE, MOVE],
+      [WORK, CARRY, MOVE, MOVE, MOVE],
+      [WORK, CARRY, MOVE, MOVE, MOVE],
+      [WORK, CARRY, MOVE, MOVE, MOVE]
+    ],
+    cost: 0
+  },
+  builder: {
+    currentAmount: 0,
+    maxAmount: [0, 4, 2, 2, 2, 2, 2, 2],
+    bodyParts: [
+      [WORK, CARRY, MOVE],
+      [WORK, CARRY, MOVE, MOVE, MOVE],
+      [WORK, CARRY, MOVE, MOVE, MOVE],
+      [WORK, CARRY, MOVE, MOVE, MOVE],
+      [WORK, CARRY, MOVE, MOVE, MOVE],
+      [WORK, CARRY, MOVE, MOVE, MOVE],
+      [WORK, CARRY, MOVE, MOVE, MOVE],
+      [WORK, CARRY, MOVE, MOVE, MOVE]
+    ],
+    cost: 0
+  },
+  upgrader: {
+    currentAmount: 0,
+    maxAmount: [3, 4, 4, 4, 4, 4, 4, 4],
+    bodyParts: [
+      [WORK, CARRY, MOVE],
+      [WORK, CARRY, MOVE, MOVE, MOVE],
+      [WORK, CARRY, MOVE, MOVE, MOVE],
+      [WORK, CARRY, MOVE, MOVE, MOVE],
+      [WORK, CARRY, MOVE, MOVE, MOVE],
+      [WORK, CARRY, MOVE, MOVE, MOVE],
+      [WORK, CARRY, MOVE, MOVE, MOVE],
+      [WORK, CARRY, MOVE, MOVE, MOVE]
+    ],
+    cost: 0
+  }
 };
+
+Memory.showActions = true;

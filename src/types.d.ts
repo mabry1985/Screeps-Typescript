@@ -5,21 +5,29 @@ interface CreepMemory {
   role: string;
   room: string;
   working: boolean;
+  buildsRoads: boolean
 }
 
 interface Memory {
   uuid: number;
   log: any;
-  state: any;
+  creepRoles: Roles;
+  showActions: boolean
+}
+
+interface Roles {
+  [key: string] : Role
 }
 
 interface Role {
-  name: string;
   currentAmount: number;
-  maxAmount: number;
-  bodyParts: BodyPartConstant[];
+  maxAmount: number[];
+  bodyParts: BodyPartConstant[][];
   cost: number;
-  buildsRoads: boolean
+}
+
+interface SpawnMemory {
+  extensions: STRUCTURE_EXTENSION[]
 }
 
 // `global` extension samples
