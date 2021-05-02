@@ -8,6 +8,12 @@ interface CreepMemory {
   buildsRoads: boolean
 }
 
+interface RoomMemory {
+  era: number
+  timer: number
+  timeStamp: number
+}
+
 interface Memory {
   uuid: number;
   log: any;

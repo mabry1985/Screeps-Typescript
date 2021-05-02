@@ -22,6 +22,9 @@ export const depotStructureFilter = (structure: any) => {
   return bool;
 };
 
+/**
+ * Removes names of dead creeps from memory
+ */
 export const clearOldNames = (): void => {
   for (const name in Memory.creeps) {
     if (!Game.creeps[name]) {
@@ -31,7 +34,12 @@ export const clearOldNames = (): void => {
   }
 };
 
-export const setCreepCount = (role: Role, type: string): number => {
+/**
+ * Returns number of creeps from input creep role type
+ * @param type creep role type
+ * @returns number of creeps
+ */
+export const setCreepCount = (type: string): number => {
   const creeps = _.filter(Game.creeps, creep => creep.memory.role === type);
   return creeps.length;
 };
@@ -43,9 +51,12 @@ export const spawnCreep = (
   roomName: string
 ) => {
   const newName = `${_.capitalize(type)} ${Game.time}`;
-  const buildsRoads = era > 1 && (type === "harvester" || type === "repairer");
+  const buildsRoads = era > 0 && (type === "harvester" || type === "upgrader");
   // console.log(`Spawning new ${type}: ${newName}`);
-  Game.spawns["Spawn1"].spawnCreep(role.bodyParts[era - 1], newName, {
+  const [spawnName] = Object.entries(Game.spawns).filter(
+    spawn => spawn[1].pos.roomName === roomName
+  )[0];
+  Game.spawns[spawnName].spawnCreep(role.bodyParts[era], newName, {
     memory: {
       role: type,
       working: false,
@@ -55,7 +66,10 @@ export const spawnCreep = (
   });
 };
 
-/* attempts to build a road in the POS of each applicable creep */
+/**
+ * Attempts to build a road at the POS of each creep with memory.buildRoad set to true
+ * @param roomName
+ */
 export const checkForRoad = (roomName: string) => {
   for (const i in Game.creeps) {
     if (Game.creeps[i].memory.buildsRoads === true) {
@@ -89,6 +103,10 @@ const bodyPartCostMap = new Map([
   [TOUGH, 10]
 ]);
 
+/**
+ * Creates a text box at pos of spawn if spawning a creep
+ * @param spawnName name of spawn
+ */
 export const spawnVisualizer = (spawnName: STRUCTURE_SPAWN) => {
   const spawn = Game.spawns[spawnName];
   if (spawn.spawning) {
@@ -102,6 +120,11 @@ export const spawnVisualizer = (spawnName: STRUCTURE_SPAWN) => {
   }
 };
 
+/**
+ * TODO: Refactor to place extensions using a loop
+ * Places extensions in a star shape around placed spawn
+ * @param spawnName name of spawn
+ */
 export const placeExtensions = (spawnName: STRUCTURE_SPAWN) => {
   const spawn = Game.spawns[spawnName];
   const extensions = spawn.room.find(FIND_STRUCTURES, {
@@ -155,23 +178,23 @@ export const placeExtensions = (spawnName: STRUCTURE_SPAWN) => {
       STRUCTURE_EXTENSION
     );
     Game.rooms[spawn.pos.roomName].createConstructionSite(
-      x - 2,
+      x - 3,
       y,
       STRUCTURE_EXTENSION
     );
     Game.rooms[spawn.pos.roomName].createConstructionSite(
-      x + 2,
+      x + 3,
       y,
       STRUCTURE_EXTENSION
     );
     Game.rooms[spawn.pos.roomName].createConstructionSite(
       x,
-      y - 2,
+      y - 3,
       STRUCTURE_EXTENSION
     );
     Game.rooms[spawn.pos.roomName].createConstructionSite(
       x,
-      y + 2,
+      y + 3,
       STRUCTURE_EXTENSION
     );
   }
