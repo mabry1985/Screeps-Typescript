@@ -12,15 +12,15 @@ import {
 import "memory";
 
 const manageSpawners = () => {
-  Object.entries(Game.spawns).forEach((entry: any) => {
-    spawnVisualizer(entry[0]);
-    placeExtensions(entry[0]);
+  Object.keys(Game.spawns).forEach((spawnName: any) => {
+    spawnVisualizer(spawnName);
+    placeExtensions(spawnName);
   });
 };
 
 const runCreeps = () => {
-  Object.keys(Game.creeps).forEach(name => {
-    const creep = new CreepBrain(Game.creeps[name]);
+  Object.values(Game.creeps).forEach(c => {
+    const creep = new CreepBrain(c);
     creep.run();
   });
 };
@@ -30,9 +30,9 @@ const manageCreeps = (name: string) => {
 
   const era = Game.rooms[name].memory.era;
 
-  Object.entries(Memory.creepRoles).forEach(entry => {
+  Object.entries(Memory.creepRoles).forEach(creepRole => {
     const harvester: Role = Memory.creepRoles["harvester"];
-    const [type, role] = entry;
+    const [type, role] = creepRole;
     role.cost = calculateBodyPartsCost(role.bodyParts[era]);
     if (role.cost <= Game.rooms[name].energyAvailable) {
       role.currentAmount = setCreepCount(type);
@@ -48,37 +48,45 @@ const manageCreeps = (name: string) => {
 const manageEra = (roomName: string): number => {
   const room = Game.rooms[roomName];
   const maxCapacity = room.energyCapacityAvailable;
-  const controllerLevel = room.controller?.level;
-  let era = 0
+  let era = 0;
 
-  if (controllerLevel === 2) {
+  if (maxCapacity >= 800) {
+    era = 3;
+  } else if (maxCapacity >= 550) {
+    era = 2;
+  } else if (maxCapacity < 550 && maxCapacity > 300) {
     era = 1;
-  } else if (controllerLevel === 3 || maxCapacity >= 550) {
-    era = 2
-  } else if (controllerLevel === 4 || maxCapacity >= 700) {
-    era = 3
+  } else if (room.controller!.level === 2) {
+    era = 1;
   }
 
-  return era
+  return era;
+};
+
+const manageRoomsAndCreeps = () => {
+  Object.entries(Game.rooms).forEach(r => {
+    const roomName = r[0];
+    const room = r[1];
+    if (!room.controller || !room.controller.my) {
+      console.log("not my house");
+    } else {
+      room.memory.era = manageEra(roomName);
+      // sets timer and tracks time in room memory to place functions that need to run infrequently
+      room.memory.timer = 300;
+      const timePassed = Game.time - room.memory.timeStamp;
+      if (!room.memory.timeStamp || timePassed > room.memory.timer) {
+        room.memory.timeStamp = Game.time;
+        clearOldNames();
+      }
+      checkForRoad(roomName);
+      manageCreeps(roomName);
+    }
+  });
 };
 
 const main = () => {
-
   manageSpawners();
-  Object.entries(Game.rooms).forEach(r => {
-    const roomName = r[0]
-    const room = r[1]
-    room.memory.era = manageEra(roomName);
-
-    // sets timer and tracks time in room memory to place functions that need to run infrequently
-    room.memory.timer = 300
-    if (!room.memory.timeStamp || (Game.time - room.memory.timeStamp) > room.memory.timer) {
-      room.memory.timeStamp = Game.time
-      clearOldNames();
-    }
-    checkForRoad(roomName);
-    manageCreeps(roomName);
-  });
+  manageRoomsAndCreeps();
   runCreeps();
 };
 
